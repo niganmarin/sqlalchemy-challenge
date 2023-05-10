@@ -27,12 +27,12 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     """Return available routes"""
-    return ( f'''Available Routes:
-    /api/v1.0/precipitation
-    /api/v1.0/stations
-    /api/v1.0/tobs
-    /api/v1.0/<start>
-    /api/v1.0/<start>/<end>
+    return ( f'''Available Routes:<br/>
+    /api/v1.0/precipitation<br/>
+    /api/v1.0/stations<br/>
+    /api/v1.0/tobs<br/>
+    /api/v1.0/<start><br/>
+    /api/v1.0/<start>/<end><br/>
     '''
     )
 
@@ -104,6 +104,9 @@ def tobs():
         temp_obs_dict = {}
         temp_obs_dict['date'] = date
         temp_obs_dict['tobs'] = tobs
+        temp_obs_list.append(temp_obs_dict)
+
+    return jsonify(temp_obs_list)
 
 
 if __name__ == '__main__':
