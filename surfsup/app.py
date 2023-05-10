@@ -9,7 +9,7 @@ import datetime as dt
 #################################################
 # Database Setup
 #################################################
-engine = create_engine("sqlite:///hawaii.sqlite")
+engine = create_engine("sqlite:///""C:/Users/nigan/sqlalchemy-challenge/resources/hawaii.sqlite")
 
 # reflect an existing database into a new model
 Base = automap_base()
@@ -104,3 +104,7 @@ def tobs():
         temp_obs_dict = {}
         temp_obs_dict['date'] = date
         temp_obs_dict['tobs'] = tobs
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
