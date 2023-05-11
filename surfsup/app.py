@@ -31,8 +31,8 @@ def index():
     /api/v1.0/precipitation<br/>
     /api/v1.0/stations<br/>
     /api/v1.0/tobs<br/>
-    /api/v1.0/<start><br/>
-    /api/v1.0/<start>/<end><br/>
+    /api/v1.0/start<br/>
+    /api/v1.0/start/end<br/>
     '''
     )
 
@@ -108,6 +108,49 @@ def tobs():
 
     return jsonify(temp_obs_list)
 
+
+@app.route('/api/v1.0/<start>')
+def start_date(start):
+    """Return the min, max, and average temperatures calculated from the given start date to the end of the dataset"""
+    # Create session link to the database
+    session = Session(engine)
+
+    # Query to retrieve the min, max, and avg temperatures from the start date to the end of the dataset
+    start_date_temps = session.query(func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs)).\
+        filter(Measurement.date >= start).\
+        order_by(Measurement.date).all()
+
+    session.close()
+
+    # Create dictionary from the query results
+    start_date_temps_dict = {}
+    start_date_temps_dict['min_temp'] = start_date_temps[0][0]
+    start_date_temps_dict['max_temp'] = start_date_temps[0][1]
+    start_date_temps_dict['avg_temp'] = start_date_temps[0][2]
+
+    return jsonify(start_date_temps_dict)
+
+@app.route('/api/v1.0/<start>/<end>')
+def start_end_date(start, end):
+    """Return the min, max, and average temperatures calculated from the given start date to the given end date"""
+    # Create session link to the database
+    session = Session(engine)
+
+    # Query to retrieve the min, max, and avg temperatures from the start date to the end date
+    start_end_date_temps = session.query(func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs)).\
+        filter(Measurement.date >= start).\
+        filter(Measurement.date <= end).\
+        order_by(Measurement.date).all()
+
+    session.close()
+
+    # Create dictionary from the query results
+    start_end_date_temps_dict = {}
+    start_end_date_temps_dict['min_temp'] = start_end_date_temps[0][0]
+    start_end_date_temps_dict['max_temp'] = start_end_date_temps[0][1]
+    start_end_date_temps_dict['avg_temp'] = start_end_date_temps[0][2]
+
+    return jsonify(start_end_date_temps_dict)
 
 if __name__ == '__main__':
     app.run(debug=True)
