@@ -116,19 +116,24 @@ def start_date(start):
     session = Session(engine)
 
     # Query to retrieve the min, max, and avg temperatures from the start date to the end of the dataset
-    start_date_temps = session.query(func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs)).\
-        filter(Measurement.date >= start).\
-        order_by(Measurement.date).all()
+    start_date_temps = session.query(func.min(Measurement.tobs), func.max(Measurement.tobs),\
+                                      func.avg(Measurement.tobs)).filter(Measurement.date >= start).all()
 
     session.close()
 
     # Create dictionary from the query results
-    start_date_temps_dict = {}
-    start_date_temps_dict['min_temp'] = start_date_temps[0][0]
-    start_date_temps_dict['max_temp'] = start_date_temps[0][1]
-    start_date_temps_dict['avg_temp'] = start_date_temps[0][2]
+    start_date_temps = [] 
 
-    return jsonify(start_date_temps_dict)
+    # Create for loop to store data
+    for min,avg,max in start_date_temps:
+        temp_dict = {}
+        temp_dict["Min"] = min
+        temp_dict["Average"] = avg
+        temp_dict["Max"] = max
+        start_date_temps.append(temp_dict)
+        
+    # Return list of dictionaries with results    
+    return jsonify(start_date_temps)
 
 @app.route('/api/v1.0/<start>/<end>')
 def start_end_date(start, end):
